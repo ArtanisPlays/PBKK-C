@@ -1,11 +1,33 @@
-<!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pertemuan 3 PBKK C — Aplikasi Scientific Calculator</title><style>body{font:16px/1.75 Arial,sans-serif;color:#243047;max-width:860px;margin:40px auto;padding:0 20px}h1,h2{color:#174a7e}code,pre{background:#f1f5f9;border-radius:5px}pre{padding:14px;overflow:auto}.note{border-left:4px solid #e1a93b;padding:8px 16px;background:#fff8e7}</style></head><body><article>
-<h1>Pertemuan 3 PBKK C: Membuat Scientific Calculator</h1><p><strong>Mata kuliah:</strong> Pemrograman Berbasis Kerangka Kerja C (2026)<br><strong>Pertemuan:</strong> 3 — Calculator Apps</p>
+<h1>Pertemuan 3 PBKK C: Membuat Scientific Calculator</h1>
+<p><strong>Mata kuliah:</strong> Pemrograman Berbasis Kerangka Kerja C (2026)<br><strong>Pertemuan:</strong> 3 — Calculator Apps</p>
+
 <p>Pada latihan ini saya membuat aplikasi kalkulator ilmiah desktop menggunakan C# dan Windows Forms pada .NET untuk Windows. Aplikasi menyediakan tombol interaktif, tampilan ekspresi dan hasil, serta mesin evaluasi ekspresi matematika.</p>
-<div class="note"><strong>Catatan cakupan:</strong> Dashboard kelas menandai Pertemuan 3 sebagai “Calculator Apps”. Rincian di bawah merupakan rekonstruksi berdasarkan dokumentasi tugas PBKK C yang terhubung di laporan, bukan salinan instruksi resmi dosen. Implementasi ini menyusun ulang fitur inti sebagai project mandiri.</div>
-<h2>Fitur</h2><ul><li>Operasi tambah, kurang, kali, bagi, tanda kurung, pangkat, persen, dan faktorial.</li><li>Fungsi sin, cos, tan, asin, acos, atan, akar kuadrat dan akar kubik.</li><li>Logaritma natural (ln), logaritma basis 10, nilai absolut, exp, dan 10 pangkat x.</li><li>Konstanta π dan e serta tombol Ans untuk hasil sebelumnya.</li><li>Mode derajat (DEG) dan radian (RAD).</li><li>Memori kalkulator: MC, MR, M+, M−, MS.</li><li>Tombol hapus karakter, reset, pembulatan, dan pintasan keyboard.</li><li>Validasi ekspresi, pembagian nol, domain fungsi, serta hasil yang tidak valid.</li></ul>
-<h2>Rancangan program</h2><p><code>Program.cs</code> menginisialisasi Windows Forms dan membuka form kalkulator. <code>CalculatorForm.cs</code> membangun antarmuka dan menangani tombol. <code>CalculatorEngine.cs</code> mengevaluasi ekspresi dengan recursive descent parser berlapis sesuai prioritas operasi: penjumlahan, perkalian, pangkat, unary, dan postfix faktorial. Evaluasi dilakukan langsung oleh parser sendiri tanpa mengeksekusi teks sebagai kode.</p>
-<h2>Penggunaan</h2><p>Tekan tombol untuk menyusun ekspresi lalu tekan <strong>=</strong>. Tombol DEG/RAD mengganti satuan sudut. Fungsi seperti <code>sqrt(25)</code>, <code>sin(30)</code>, dan <code>2^3</code> dapat dimasukkan melalui keypad.</p>
-<h2>Menjalankan aplikasi</h2><p>Project ini membutuhkan Windows dan .NET 10 SDK dengan workload Windows Forms.</p><pre><code>dotnet run --project PBKKC.Pertemuan3.csproj</code></pre>
-<h2>Kesimpulan</h2><p>Project ini menerapkan pemrograman event-driven pada Windows Forms, pemisahan UI dan logika perhitungan, validasi input, serta parsing ekspresi matematika dengan operator precedence.</p>
-</article></body></html>
+
+<div style="border-left: 4px solid #e1a93b; padding: 10px 16px; background: #fff8e7; margin: 16px 0; border-radius: 4px;">
+  <strong>Catatan cakupan:</strong> Dashboard kelas menandai Pertemuan 3 sebagai “Calculator Apps”. Rincian di bawah merupakan rekonstruksi berdasarkan dokumentasi tugas PBKK C yang terhubung di laporan, bukan salinan instruksi resmi dosen. Implementasi ini menyusun ulang fitur inti sebagai project mandiri.
+</div>
+
+<h2>Fitur</h2>
+<ul>
+  <li>Operasi tambah, kurang, kali, bagi, tanda kurung, pangkat, persen, dan faktorial.</li>
+  <li>Fungsi sin, cos, tan, asin, acos, atan, akar kuadrat dan akar kubik.</li>
+  <li>Logaritma natural (ln), logaritma basis 10, nilai absolut, exp, dan 10 pangkat x.</li>
+  <li>Konstanta π dan e serta tombol Ans untuk hasil sebelumnya.</li>
+  <li>Mode derajat (DEG) dan radian (RAD).</li>
+  <li>Memori kalkulator: MC, MR, M+, M−, MS.</li>
+  <li>Tombol hapus karakter, reset, pembulatan, dan pintasan keyboard.</li>
+  <li>Validasi ekspresi, pembagian nol, domain fungsi, serta hasil yang tidak valid.</li>
+</ul>
+
+<h2>Rancangan program</h2>
+<p><code>Program.cs</code> menginisialisasi Windows Forms dan membuka form kalkulator. <code>CalculatorForm.cs</code> membangun antarmuka dan menangani tombol. <code>CalculatorEngine.cs</code> mengevaluasi ekspresi dengan recursive descent parser berlapis sesuai prioritas operasi: penjumlahan, perkalian, pangkat, unary, dan postfix faktorial. Evaluasi dilakukan langsung oleh parser sendiri tanpa mengeksekusi teks sebagai kode.</p>
+
+<h2>Penggunaan</h2>
+<p>Tekan tombol untuk menyusun ekspresi lalu tekan <strong>=</strong>. Tombol DEG/RAD mengganti satuan sudut. Fungsi seperti <code>sqrt(25)</code>, <code>sin(30)</code>, dan <code>2^3</code> dapat dimasukkan melalui keypad.</p>
+
+<h2>Menjalankan aplikasi</h2>
+<p>Project ini membutuhkan Windows dan .NET 10 SDK dengan workload Windows Forms.</p>
+<pre style="background: #f1f5f9; padding: 14px; border-radius: 6px; overflow-x: auto;"><code>dotnet run --project "Pertemuan 3/PBKKC.Pertemuan3.csproj"</code></pre>
+
+<h2>Kesimpulan</h2>
+<p>Project ini menerapkan pemrograman event-driven pada Windows Forms, pemisahan UI dan logika perhitungan, validasi input, serta parsing ekspresi matematika dengan operator precedence.</p>
