@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pertemuan 4 PBKK C — Aplikasi Registrasi Mahasiswa WPF</title>
+  <style>
+    body{font:16px/1.75 Arial,sans-serif;color:#243047;max-width:900px;margin:40px auto;padding:0 20px}
+    h1,h2{color:#174a7e;line-height:1.35}h2{margin-top:32px}
+    code,pre{background:#f1f5f9;border-radius:5px}code{padding:2px 5px}
+    pre{padding:16px;overflow:auto;line-height:1.6}pre code{padding:0}
+    .note{border-left:4px solid #e1a93b;padding:12px 16px;background:#fff8e7}
+    li{margin:5px 0}a{color:#174a7e}
+    figure{margin:24px 0}figure img{display:block;max-width:100%;height:auto;border:1px solid #dee6ed;border-radius:8px}figcaption{font-size:14px;color:#5b6e7e;margin-top:8px}
+    @media print{body{max-width:none;margin:0}pre{white-space:pre-wrap}}
+  </style>
+</head>
+<body>
+<!-- Untuk Blogger: salin isi di dalam elemen article ke editor dalam mode HTML. -->
+<!-- Unggah Pratinjau-Aplikasi.png di Blogger, lalu ganti src relatif di bawah dengan URL gambar hasil unggahan. -->
+<article>
+  <h1>Pertemuan 4 PBKK C: Membuat Aplikasi Registrasi Mahasiswa dengan WPF</h1>
+  <p><strong>Mata kuliah:</strong> Pemrograman Berbasis Kerangka Kerja C (2026)<br>
+  <strong>Pertemuan:</strong> 4 — Aplikasi Registrasi Mahasiswa<br>
+  <strong>Teknologi:</strong> C#, WPF, dan .NET Framework 4.8</p>
+
+  <p>Pada pertemuan ini saya membuat aplikasi desktop untuk mencatat registrasi mahasiswa. Pengguna mengisi form, menyimpan data, melihat daftar dalam tabel, mencari mahasiswa, serta memperbarui atau menghapus data. Antarmuka dibangun menggunakan Windows Presentation Foundation (WPF), sedangkan logika aplikasi ditulis dalam C#.</p>
+
+  <figure>
+    <img src="Pratinjau-Aplikasi.png" alt="Antarmuka WPF dengan formulir registrasi dan tabel mahasiswa">
+    <figcaption>Pratinjau window WPF. Data pada gambar adalah contoh untuk dokumentasi.</figcaption>
+  </figure>
+
+  <div class="note"><strong>Catatan versi dan cakupan:</strong> Saya memeriksa file project tugas sebelumnya. Project console Pertemuan 2 memakai <code>net10.0</code>; project Windows Forms Pertemuan 2 dan 3 memakai <code>net10.0-windows</code>. Ketiganya menggunakan .NET 10, bukan .NET Framework. Untuk tugas ini saya menggunakan <strong>.NET Framework 4.8</strong> dengan target <code>net48</code>, sesuai permintaan saat ini. Tugas sebelumnya tetap menggunakan versi aslinya. Penjelasan ini mengikuti cakupan aplikasi yang dibuat; tanggal pertemuan dan rubrik resmi dosen belum diberikan.</div>
+
+  <h2>1. Tujuan pembelajaran</h2>
+  <ul>
+    <li>Membuat aplikasi WPF yang memiliki form dan tabel data.</li>
+    <li>Memisahkan deklarasi tampilan dalam XAML dari penanganan event dalam C#.</li>
+    <li>Menggunakan kontrol WPF sesuai jenis input pengguna.</li>
+    <li>Menghubungkan koleksi data ke <code>DataGrid</code> melalui data binding.</li>
+    <li>Menerapkan tambah, baca, ubah, hapus, pencarian, dan validasi data mahasiswa.</li>
+  </ul>
+
+  <h2>2. WPF dan .NET Framework yang digunakan</h2>
+  <p>WPF adalah kerangka kerja antarmuka desktop untuk Windows. XAML digunakan untuk mendeskripsikan kontrol, layout, dan binding secara deklaratif. C# menangani tindakan pengguna serta pengolahan data. Keduanya bekerja bersama dalam sebuah window.</p>
+  <p>Project ini menggunakan format SDK-style, tetapi target runtime-nya tetap .NET Framework 4.8. Pengaturan inti pada file project adalah:</p>
+  <pre><code>&lt;TargetFramework&gt;net48&lt;/TargetFramework&gt;
+&lt;UseWPF&gt;true&lt;/UseWPF&gt;</code></pre>
+  <p>Nama .NET SDK dan .NET Framework memiliki peran berbeda. SDK menyediakan alat untuk membangun project; <code>net48</code> menentukan framework yang dituju oleh aplikasi. Karena itu, format SDK-style tidak berarti aplikasi ini memakai .NET 10.</p>
+
+  <h2>3. Fitur dan pilihan kontrol</h2>
+  <ul>
+    <li><strong>TextBox:</strong> memasukkan NIM, nama, email, nomor telepon, dan alamat.</li>
+    <li><strong>ComboBox:</strong> memilih program studi dari opsi yang disediakan.</li>
+    <li><strong>RadioButton:</strong> memilih satu jenis kelamin.</li>
+    <li><strong>DatePicker:</strong> memilih tanggal lahir.</li>
+    <li><strong>Button:</strong> menjalankan simpan, hapus, dan reset form.</li>
+    <li><strong>DataGrid:</strong> menampilkan daftar mahasiswa serta memilih data untuk diedit.</li>
+    <li><strong>Kolom pencarian:</strong> memfilter mahasiswa berdasarkan NIM, nama, atau program studi tanpa membedakan huruf besar dan huruf kecil.</li>
+  </ul>
+  <p>Daftar mahasiswa kosong ketika aplikasi pertama kali dibuka. Pengguna menambahkan datanya sendiri melalui form.</p>
+
+  <h2>4. Struktur aplikasi</h2>
+  <pre><code>PBKKC.Pertemuan4.sln
+PBKKC.Pertemuan4.csproj
+App.xaml
+App.xaml.cs
+MainWindow.xaml
+MainWindow.xaml.cs
+Models/Student.cs
+Services/StudentRegistration.cs</code></pre>
+  <p><code>App.xaml</code> dan <code>App.xaml.cs</code> mengatur awal aplikasi. <code>MainWindow.xaml</code> mendefinisikan form, tombol, tabel, dan binding. <code>MainWindow.xaml.cs</code> menangani event pada window. <code>Student.cs</code> memodelkan data satu mahasiswa, sedangkan <code>StudentRegistration.cs</code> memusatkan validasi serta proses membuat atau memperbarui data.</p>
+  <p>Pemisahan ini membuat aturan registrasi tidak harus ditulis ulang untuk operasi tambah dan edit. Tampilan meminta layanan memeriksa input terlebih dahulu, kemudian memperbarui koleksi jika data valid.</p>
+
+  <h2>5. XAML dan pemrograman event-driven</h2>
+  <p>XAML menjelaskan apa yang ditampilkan di layar: kontrol input, posisi elemen, label, dan kolom tabel. Layout WPF membantu tampilan mengikuti ukuran window. C# pada code-behind menjelaskan tindakan yang dilakukan aplikasi ketika pengguna berinteraksi.</p>
+  <p>Alurnya bersifat event-driven. Klik simpan memicu proses membaca dan memvalidasi form. Perubahan baris terpilih memicu pengisian form untuk edit. Perubahan teks pencarian memicu penyegaran filter. Aplikasi menunggu tindakan pengguna, lalu menjalankan handler yang sesuai.</p>
+  <p>Implementasi ini memakai event pada code-behind untuk mempelajari dasar WPF. Pola MVVM belum menjadi bagian cakupan tugas.</p>
+
+  <h2>6. Data binding dan koleksi mahasiswa</h2>
+  <p>Data mahasiswa disimpan dalam <code>ObservableCollection&lt;Student&gt;</code>. Koleksi tersebut memberi notifikasi ketika item ditambah atau dihapus. Dengan menghubungkan sumber data tabel ke koleksi, <code>DataGrid</code> dapat menampilkan perubahan daftar.</p>
+  <p>Setiap kolom tabel menggunakan binding ke properti model mahasiswa. Binding ini menghubungkan nilai objek C# dengan nilai yang tampil di kolom. Ketika data diedit, aplikasi mengganti objek lama dengan objek yang telah diperbarui dalam koleksi. Penggantian item memberi notifikasi kepada WPF sehingga tabel menampilkan hasil edit.</p>
+  <p>Pencarian menggunakan <code>ICollectionView</code>, yaitu tampilan koleksi yang dapat difilter. Filter memeriksa NIM, nama, dan program studi. Mahasiswa yang tidak cocok tetap berada di koleksi sumber, tetapi tidak terlihat selama filter aktif. Mengosongkan pencarian menampilkan kembali seluruh data.</p>
+
+  <h2>7. Aturan validasi</h2>
+  <ul>
+    <li><strong>NIM:</strong> wajib, hanya angka, maksimal 20 karakter, dan tidak boleh sama dengan NIM mahasiswa lain. NIM disimpan sebagai teks agar nol di depan tidak hilang.</li>
+    <li><strong>Nama lengkap:</strong> wajib diisi dan maksimal 100 karakter.</li>
+    <li><strong>Program studi dan jenis kelamin:</strong> wajib dipilih.</li>
+    <li><strong>Tanggal lahir:</strong> wajib diisi dan tidak boleh berada di masa depan. Jika tanggal yang diketik tidak valid, pilihan tanggal sebelumnya dikosongkan agar tanggal lama tidak tersimpan tanpa sengaja.</li>
+    <li><strong>Email:</strong> wajib memiliki format alamat email yang valid, maksimal 254 karakter, dan tanpa spasi.</li>
+    <li><strong>Nomor telepon:</strong> opsional; jika diisi, hanya menerima angka, spasi, tanda hubung, serta tanda <code>+</code> di awal nomor. Jumlah angka harus 6–15 digit setelah karakter pemisah dan tanda <code>+</code> diabaikan.</li>
+    <li><strong>Alamat:</strong> opsional dan maksimal 500 karakter.</li>
+  </ul>
+  <p>Semua pemeriksaan dilakukan sebelum data ditambahkan atau diperbarui. Jika satu aturan gagal, aplikasi menampilkan pesan agar pengguna dapat memperbaiki input. NIM menjadi identitas tetap dan tidak dapat diubah ketika edit. Pemeriksaan NIM duplikat mengecualikan mahasiswa yang sedang diedit, sehingga menyimpan kembali NIM miliknya sendiri diperbolehkan.</p>
+  <p>Validasi email memeriksa format saja. Aplikasi belum mengirim pesan atau memverifikasi bahwa alamat email tersebut aktif.</p>
+
+  <h2>8. Alur registrasi, edit, hapus, dan pencarian</h2>
+  <ol>
+    <li><strong>Registrasi:</strong> pengguna mengisi form lalu menekan simpan. Data yang valid dimasukkan ke koleksi dan ditampilkan pada tabel.</li>
+    <li><strong>Edit:</strong> pengguna memilih baris tabel. Data mahasiswa dimuat ke form; setelah diubah dan disimpan, baris mahasiswa yang sama diperbarui. NIM tetap saat edit.</li>
+    <li><strong>Hapus:</strong> pengguna memilih mahasiswa lalu menekan hapus. Dialog konfirmasi ditampilkan; data dihapus hanya jika pengguna menyetujuinya.</li>
+    <li><strong>Reset:</strong> form dikosongkan dan kembali ke mode tambah, sehingga penyimpanan berikutnya membuat mahasiswa baru.</li>
+    <li><strong>Cari:</strong> pengguna memasukkan sebagian NIM, nama, atau program studi. Tabel menampilkan hasil yang sesuai; pencarian kosong mengembalikan daftar lengkap.</li>
+  </ol>
+
+  <h2>9. Cara membangun dan menjalankan</h2>
+  <p>Aplikasi dijalankan di Windows dengan runtime <strong>.NET Framework 4.8</strong>. Untuk pengembangan, gunakan Visual Studio dengan workload <strong>.NET desktop development</strong> dan dukungan project SDK-style. Project menyertakan package build-time <code>Microsoft.NETFramework.ReferenceAssemblies</code> versi <code>1.0.3</code> untuk menyediakan referensi framework melalui restore, sesuai <a href="https://learn.microsoft.com/en-us/dotnet/framework/migration-guide/reference-assemblies">dokumentasi reference assemblies Microsoft</a>. <strong>.NET Framework 4.8 targeting pack/developer pack</strong> juga dapat dipasang bila diperlukan oleh lingkungan Visual Studio.</p>
+  <ol>
+    <li>Buka file <code>PBKKC.Pertemuan4.sln</code> di Visual Studio.</li>
+    <li>Pilih <code>PBKKC.Pertemuan4</code> sebagai startup project bila diperlukan.</li>
+    <li>Jalankan <strong>Build Solution</strong>.</li>
+    <li>Tekan <strong>F5</strong> atau <strong>Ctrl+F5</strong> untuk menjalankan aplikasi.</li>
+  </ol>
+  <p>Jika .NET SDK yang sesuai tersedia, build juga dapat dilakukan dari terminal pada folder project. Restore memerlukan akses NuGet atau cache package yang telah tersedia. Package referensi memungkinkan build tanpa targeting pack lokal yang dipasang secara terpisah:</p>
+  <pre><code>dotnet build PBKKC.Pertemuan4.sln</code></pre>
+  <p>Hasil build dapat dijalankan melalui Visual Studio atau executable di folder <code>bin/Debug/net48/</code>.</p>
+
+  <h2>10. Skenario pengujian manual</h2>
+  <p><strong>Hasil verifikasi:</strong> Build Release berhasil tanpa warning atau error. Assembly hasil build menargetkan .NET Framework 4.8. Sebanyak 56 pemeriksaan programatis pada validasi, registrasi, edit, pencarian, koreksi tanggal, notifikasi koleksi, sesi kosong, dan layout WPF lulus. Tombol simpan tetap terlihat pada ukuran normal maupun minimum. Dialog konfirmasi hapus tercakup dalam prosedur manual berikut.</p>
+  <p>Daftar berikut dapat dipakai untuk memeriksa perilaku aplikasi. Ini merupakan prosedur pengujian, bukan laporan bahwa seluruh pengujian sudah lulus.</p>
+  <ol>
+    <li>Buka aplikasi dan pastikan tabel awal kosong.</li>
+    <li>Daftarkan mahasiswa dengan NIM <code>001234</code> dan seluruh kolom wajib yang valid. Pastikan satu baris tampil dan nol di depan NIM tetap tersimpan.</li>
+    <li>Coba form kosong, NIM berhuruf, dan NIM duplikat. Pastikan masing-masing ditolak tanpa menambah data. Periksa bahwa kotak NIM membatasi input hingga 20 karakter, termasuk saat menempel teks yang lebih panjang; layanan validasi juga menolak NIM yang melewati batas tersebut.</li>
+    <li>Coba email tidak valid serta tanggal lahir di masa depan. Pilih tanggal valid lalu ketik tanggal yang tidak valid; pastikan pilihan lama dikosongkan dan data tidak disimpan sampai tanggal valid diisi.</li>
+    <li>Masukkan telepon berhuruf, tanda <code>+</code> di tengah, atau nomor kurang dari 6 maupun lebih dari 15 digit. Pastikan semua ditolak. Nomor 6–15 digit dengan tanda <code>+</code> opsional di awal, spasi, atau tanda hubung harus diterima.</li>
+    <li>Pilih mahasiswa, edit nama atau email, lalu simpan. Pastikan data pada baris yang sama berubah dan jumlah mahasiswa tetap.</li>
+    <li>Pilih mahasiswa untuk diedit dan pastikan NIM tidak dapat diubah. Simpan perubahan data lain dengan NIM yang sama dan pastikan penyimpanan diperbolehkan.</li>
+    <li>Cari sebagian NIM, nama, dan program studi dengan variasi huruf besar/kecil. Kosongkan pencarian untuk mengembalikan semua baris.</li>
+    <li>Batalkan konfirmasi hapus, lalu ulangi dan konfirmasi. Pastikan data hanya dihapus pada percobaan kedua.</li>
+    <li>Reset form setelah memilih baris, lalu simpan data baru. Pastikan aplikasi kembali melakukan operasi tambah.</li>
+    <li>Tutup dan buka kembali aplikasi. Daftar kembali kosong karena data hanya tersimpan selama sesi berjalan.</li>
+    <li>Coba nama lebih dari 100 karakter serta alamat lebih dari 500 karakter. Pastikan batas input atau validasi mencegah penyimpanan nilai yang terlalu panjang.</li>
+  </ol>
+
+  <h2>11. Batasan dan hasil pembelajaran</h2>
+  <p>Registrasi pada aplikasi ini berarti pencatatan data mahasiswa di memori. Belum ada database, penyimpanan file, autentikasi, pengiriman email, atau hubungan dengan sistem akademik. Data hilang ketika aplikasi ditutup. Penyimpanan permanen dapat menjadi pengembangan berikutnya jika dibutuhkan dalam instruksi tugas.</p>
+  <p>Melalui tugas ini, saya menerapkan XAML, event-driven programming, kontrol input WPF, data binding, koleksi yang dapat memberi notifikasi, filter data, serta validasi sebelum perubahan disimpan. Pemisahan model, layanan registrasi, dan tampilan membuat masing-masing bagian lebih mudah dipahami dan dikembangkan.</p>
+</article>
+</body>
+</html>
