@@ -5,4 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DesktopStudentManager\**" />
+    <None Remove="DesktopStudentManager\**" />
+  </ItemGroup>
 </Project>
+
