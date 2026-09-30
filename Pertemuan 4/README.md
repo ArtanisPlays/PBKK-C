@@ -32,7 +32,7 @@ Cakupan aplikasi mengikuti permintaan aplikasi registrasi mahasiswa WPF. Tanggal
 ## Struktur project
 
 ```text
-pertemuan-4-wpf-student-registration/
+Pertemuan 4/
   PBKKC.Pertemuan4.sln
   PBKKC.Pertemuan4.csproj
   App.xaml
